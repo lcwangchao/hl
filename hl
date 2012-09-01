@@ -1,0 +1,46 @@
+#!/usr/bin/python
+import sys;
+from optparse import OptionParser
+
+#read options
+parser = OptionParser("usage: %prog WORD [-f FILE]")
+parser.add_option("-f", "--file", dest="filename",
+                  help="Read from a file", metavar="FILE")                
+(options, args) = parser.parse_args()
+
+
+#high light colors 
+colorTags = ["\033[1;31;40m","\033[1;31;40m"]
+
+def main():
+    if len(args) == 0:
+        parser.print_help()
+        return
+    
+    word = args[0]
+    colorTag = colorTags[0]
+    defatultColorTag = "\033[0m"
+    relpaceWord = "".join([colorTag,word,defatultColorTag])
+    
+    if options.filename:
+        try:
+            file = open(options.filename)
+        except IOError:
+            print "No such file or directory: ", options.filename
+            return
+        while True:
+            line = file.readline()
+            if not line:
+                break
+            sys.stdout.write(line.replace(word,relpaceWord))
+        file.close()
+    else:
+        while True:
+            try:
+                line = raw_input()
+            except EOFError:
+                break
+            print line.replace(word,relpaceWord) 
+    
+if __name__ == "__main__":
+    main()
